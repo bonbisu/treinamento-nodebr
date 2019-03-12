@@ -4,13 +4,14 @@
 2 Obter o endereco do usuario pelo Id
 */
 
-function obterUsuario() {
+function obterUsuario(callback) {
   setTimeout(function() {
-    return {
+    return callback(null, {
+      // retorna usuario para obterUsuario após 1 segundo
       id: 1,
       nome: 'Aladin',
-      dataNascimento: new Date()
-    };
+      dataNascimento: new Date('06/05/1991 16:20:07')
+    });
   }, 1000);
 }
 
@@ -25,8 +26,12 @@ function obterTelefone(idUsuario) {
 
 function obterEndereco(idUsuario) {}
 
-const usuario = obterUsuario();
-const telefone = obterTelefone(usuario.id);
+function resolverUsuario(erro, usuario) {
+  console.log('usuario', usuario);
+}
 
-console.log('usuario', usuario);
-console.log('telefone', telefone);
+obterUsuario(resolverUsuario); // passando uma função como callback
+
+// const telefone = obterTelefone(usuario.id);
+
+// console.log('telefone', telefone);
