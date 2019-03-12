@@ -4,18 +4,26 @@
 2 Obter o endereco do usuario pelo Id
 */
 
-function obterUsuario(callback) {
+function obterUsuario() {
   // o callback é apenas o padrao function (erro, sucesso)
   // não importando o nome da mesma, podendo ser anonima(arrow)
   // o callback, por padrão é o ultimo parametro
-  setTimeout(function() {
-    return callback(null, {
-      // retorna usuario para obterUsuario após 1 segundo
-      id: 1,
-      nome: 'Aladin',
-      dataNascimento: new Date('06/05/1991 16:20:07')
-    });
-  }, 1000);
+
+  return new Promise(function resolvePromise(resolve, reject) {
+    // quando der algum problema -> reject(erro)
+    // quando sucesso -> resolve
+
+    setTimeout(function() {
+      // return reject(new Error('DEU RUIM DE VERDADE!')); // evita quebrar a execucao indo para o catch e retornando o erro
+
+      return resolve({
+        // retorna usuario para obterUsuario após 1 segundo
+        id: 1,
+        nome: 'Aladin',
+        dataNascimento: new Date('06/05/1991 16:20:07')
+      });
+    }, 1000);
+  });
 }
 
 function obterTelefone(idUsuario, callback) {
@@ -36,43 +44,46 @@ function obterEndereco(idUsuario, callbackson) {
   }, 2000);
 }
 
-function resolverUsuario(erro, usuario) {
-  console.log('usuario', usuario);
-}
-
-obterUsuario(function resolverUsuario(error, usuario) {
-  // null || "" || 0 === false
-  if (error) {
-    console.error('DEU RUIM em USUARIO', error);
-    return;
-  }
-  obterTelefone(usuario.id, function resolverTelefone(error1, telefone) {
-    if (error1) {
-      console.error('DEU RUIM em TELEFONE', error1);
-      return;
-    }
-    obterEndereco(usuario.id, (error2, endereco) => {
-      if (error2) {
-        console.error('DEU RUIM em ENDERECO', error2);
-      }
-      // usando um string dinamica com variaveis
-      console.log(`
-      Nome: ${usuario.nome},
-      Endereco: ${endereco.rua}, ${endereco.numero}
-      Telefone: (${telefone.ddd}) ${telefone.telefone}
-      `);
-      console.log(
-        // devolvendo tbm como json
-        JSON.stringify({
-          nome: usuario.nome,
-          endereco: endereco.rua + ', ' + endereco.numero,
-          telefone: '(' + telefone.ddd + ') ' + telefone.telefone
-        })
-      );
-    });
+const usuarioPromise = obterUsuario();
+// para manipular o sucesso usamos a funcao .then
+// para manipular erros, usamos .catch
+usuarioPromise
+  .then(function(resultado) {
+    console.log('resultado', resultado);
+  })
+  .catch(function(erro) {
+    console.error('DEU RUIM', erro);
   });
-}); // passando uma função como callback
 
-// const telefone = obterTelefone(usuario.id);
-
-// console.log('telefone', telefone);
+// obterUsuario(function resolverUsuario(error, usuario) {
+//   // null || "" || 0 === false
+//   if (error) {
+//     console.error('DEU RUIM em USUARIO', error);
+//     return;
+//   }
+//   obterTelefone(usuario.id, function resolverTelefone(error1, telefone) {
+//     if (error1) {
+//       console.error('DEU RUIM em TELEFONE', error1);
+//       return;
+//     }
+//     obterEndereco(usuario.id, (error2, endereco) => {
+//       if (error2) {
+//         console.error('DEU RUIM em ENDERECO', error2);
+//       }
+//       // usando um string dinamica com variaveis
+//       console.log(`
+//       Nome: ${usuario.nome},
+//       Endereco: ${endereco.rua}, ${endereco.numero}
+//       Telefone: (${telefone.ddd}) ${telefone.telefone}
+//       `);
+//       console.log(
+//         // devolvendo tbm como json
+//         JSON.stringify({
+//           nome: usuario.nome,
+//           endereco: endereco.rua + ', ' + endereco.numero,
+//           telefone: '(' + telefone.ddd + ') ' + telefone.telefone
+//         })
+//       );
+//     });
+//   });
+// }); // passando uma função como callback
