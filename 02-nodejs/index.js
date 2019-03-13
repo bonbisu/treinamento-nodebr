@@ -3,6 +3,13 @@
 1 Obter o numero de telefone de um usuario a partir de seu Id
 2 Obter o endereco do usuario pelo Id
 */
+// importamos um módulo interno do node.js para converter a função obterEndereco com callback para Promise, sem altera-la
+// algumas libs não seguem o padrão de callback(error, result) em suas funções impedindo o uso de promisify
+// nestes casos é necessario criar uma promisse para a função desejada (como em obterUsuario e obterTelefone)
+// o promisify também quebra a execução caso tenha algum falor no erro do callback
+
+const util = require('util');
+const obterEnderecoAsync = util.promisify(obterEndereco);
 
 function obterUsuario() {
     // o callback é apenas o padrao function (erro, sucesso)
@@ -63,13 +70,32 @@ usuarioPromise
             };
         });
     })
+    .then(resultado => {
+        const endereco = obterEnderecoAsync(resultado.usuario.id);
+        return endereco.then(result => {
+            return {
+                usuario: resultado.usuario,
+                telefone: resultado.telefone,
+                endereco: result
+            };
+        });
+    })
     .then(function getResult(resultado) {
         // em JS as funçoes genericas de uso 'unico' podem ser escritas:
         // nomeadas: function nomeDaFuncao(param1, param2) { codigo }
         // genericas: function(param1, param2) { codigo }
         // arrow: (param1, param2) => { codigo }
         // arrow: param => { codigo }
-        console.log('resultado', resultado);
+        // misturei no código propositalmente todas abordagens para praticar e entender onde são mais adequadas
+
+        // resultado refatorado:
+        console.log(`
+        Nome: ${resultado.usuario.nome}
+        Endereco: ${resultado.endereco.rua}, ${resultado.endereco.numero}
+        Telefone: (${resultado.telefone.ddd}) ${resultado.telefone.telefone}
+        `);
+
+        // console.log('resultado', resultado);
     })
     .catch(function(erro) {
         console.error('DEU RUIM', erro);
