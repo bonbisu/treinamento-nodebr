@@ -53,57 +53,87 @@ function obterEndereco(idUsuario, callbackson) {
     }, 2000);
 }
 
-const usuarioPromise = obterUsuario();
-// para manipular o sucesso usamos a funcao .then
-// para manipular erros, usamos .catch
-usuarioPromise
-    .then(function(usuario) {
-        // o resultado de obterTelefone(usuario.id) entra como parametro diretamente em result(como um json) como um resolverTelefone
-        return obterTelefone(usuario.id).then(function(result) {
-            return {
-                usuario: {
-                    nome: usuario.nome,
-                    id: usuario.id,
-                    dataNascimento: usuario.dataNascimento
-                },
-                telefone: result
-            };
-        });
-    })
-    .then(resultado => {
-        const endereco = obterEnderecoAsync(resultado.usuario.id);
-        return endereco.then(result => {
-            return {
-                usuario: resultado.usuario,
-                telefone: resultado.telefone,
-                endereco: result
-            };
-        });
-    })
-    .then(function getResult(resultado) {
-        // em JS as funçoes genericas de uso 'unico' podem ser escritas:
-        // nomeadas: function nomeDaFuncao(param1, param2) { codigo }
-        // genericas: function(param1, param2) { codigo }
-        // arrow: (param1, param2) => { codigo }
-        // arrow: param => { codigo }
-        // misturei no código propositalmente todas abordagens para praticar e entender onde são mais adequadas
+// 1 adicionando a palavra async antes de uma função -> automaticamente retorna uma promise
+main();
+async function main() {
+    try {
+        console.time('medida-promise'); // captura o tempo de execução de uma bloco
+        const usuario = await obterUsuario();
 
-        // resultado refatorado:
+        // melhor abordagem para executar promises em paralelo (executionTime ≃ 3000)
+        const resultado = await Promise.all([
+            obterTelefone(usuario.id),
+            obterEnderecoAsync(usuario.id)
+        ]);
+        const telefone = resultado[0];
+        const endereco = resultado[1];
+
+        // desta forma, endereco só inicia após resolver telefone (executionTime ≃ 5000)
+        // const telefone = await obterTelefone(usuario.id);
+        // const endereco = await obterEnderecoAsync(usuario.id);
+
         console.log(`
-        Nome: ${resultado.usuario.nome}
-        Endereco: ${resultado.endereco.rua}, ${resultado.endereco.numero}
-        Telefone: (${resultado.telefone.ddd}) ${resultado.telefone.telefone}
+        Nome: ${usuario.nome}
+        Telefone: (${telefone.ddd}) ${telefone.telefone}
+        Endereco: ${endereco.rua}, ${endereco.numero}
         `);
+        console.timeEnd('medida-promise'); // retorna log do tempo de execucao
+    } catch (error) {
+        console.error('DEU RUIM', error);
+    }
+}
 
-        // console.log('resultado', resultado);
-    })
-    .catch(function(erro) {
-        console.error('DEU RUIM', erro);
-    });
+// const usuarioPromise = obterUsuario();
+// // para manipular o sucesso usamos a funcao .then
+// // para manipular erros, usamos .catch
+// usuarioPromise
+//     .then(function(usuario) {
+//         // o resultado de obterTelefone(usuario.id) entra como parametro diretamente em result(como um json) como um resolverTelefone
+//         return obterTelefone(usuario.id).then(function(result) {
+//             return {
+//                 usuario: {
+//                     nome: usuario.nome,
+//                     id: usuario.id,
+//                     dataNascimento: usuario.dataNascimento
+//                 },
+//                 telefone: result
+//             };
+//         });
+//     })
+//     .then(resultado => {
+//         const endereco = obterEnderecoAsync(resultado.usuario.id);
+//         return endereco.then(result => {
+//             return {
+//                 usuario: resultado.usuario,
+//                 telefone: resultado.telefone,
+//                 endereco: result
+//             };
+//         });
+//     })
+//     .then(function getResult(resultado) {
+//         // em JS as funçoes genericas de uso 'unico' podem ser escritas:
+//         // nomeadas: function nomeDaFuncao(param1, param2) { codigo }
+//         // genericas: function(param1, param2) { codigo }
+//         // arrow: (param1, param2) => { codigo }
+//         // arrow: param => { codigo }
+//         // misturei no código propositalmente todas abordagens para praticar e entender onde são mais adequadas
 
-// obterUsuario(function resolverUsuario(error, usuario) {
-//     // null || "" || 0 === false
-//     if (error) {
+//         // resultado refatorado:
+//         console.log(`
+//         Nome: ${resultado.usuario.nome}
+//         Endereco: ${resultado.endereco.rua}, ${resultado.endereco.numero}
+//         Telefone: (${resultado.telefone.ddd}) ${resultado.telefone.telefone}
+//         `);
+
+//         // console.log('resultado', resultado);
+//     })
+//     .catch(function(erro) {
+//         console.error('DEU RUIM', erro);
+//     });
+
+// // obterUsuario(function resolverUsuario(error, usuario) {
+// //     // null || "" || 0 === false
+// //     if (error) {
 //         console.error('DEU RUIM em USUARIO', error);
 //         return;
 //     }
