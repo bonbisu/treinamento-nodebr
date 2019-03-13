@@ -20,7 +20,7 @@ function obterUsuario() {
                 // retorna usuario para obterUsuario após 1 segundo
                 id: 1,
                 nome: 'Aladin',
-                dataNascimento: new Date('06/05/1991 16:20:07')
+                dataNascimento: new Date('06/05/1991 13:20:07')
             });
         }, 1000);
     });
@@ -51,9 +51,24 @@ const usuarioPromise = obterUsuario();
 // para manipular erros, usamos .catch
 usuarioPromise
     .then(function(usuario) {
-        return obterTelefone(usuario.id);
+        // o resultado de obterTelefone(usuario.id) entra como parametro diretamente em result(como um json) como um resolverTelefone
+        return obterTelefone(usuario.id).then(function(result) {
+            return {
+                usuario: {
+                    nome: usuario.nome,
+                    id: usuario.id,
+                    dataNascimento: usuario.dataNascimento
+                },
+                telefone: result
+            };
+        });
     })
-    .then(function(resultado) {
+    .then(function getResult(resultado) {
+        // em JS as funçoes genericas de uso 'unico' podem ser escritas:
+        // nomeadas: function nomeDaFuncao(param1, param2) { codigo }
+        // genericas: function(param1, param2) { codigo }
+        // arrow: (param1, param2) => { codigo }
+        // arrow: param => { codigo }
         console.log('resultado', resultado);
     })
     .catch(function(erro) {
