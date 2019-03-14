@@ -5,6 +5,8 @@ Array.prototype.meuMap = function(callback) {
     const novoArrayMapeado = [];
     for (let indice = 0; indice <= this.length - 1; indice++) {
         const resultado = callback(this[indice], indice);
+        // a cada item na lista de entrada irá passar como o primeiro argumento do callback
+        // e será utilizado como a funcao definida na implementacao
         novoArrayMapeado.push(resultado);
     }
     return novoArrayMapeado;
