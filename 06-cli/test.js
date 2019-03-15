@@ -10,6 +10,7 @@ describe('Suite de manipulação de Heróis', () => {
     before(async () => {
         await database.cadastrar(DEFAULT_ITEM_CADASTRAR);
     });
+
     it('deve pesquisar um heroi usando arquivos', async () => {
         const expected = DEFAULT_ITEM_CADASTRAR;
         // passando [resultado, resultado2] podemos extrair pela posição do array, caso exista
@@ -18,6 +19,7 @@ describe('Suite de manipulação de Heróis', () => {
 
         deepEqual(resultado, expected);
     });
+
     it('deve cadastrar um heroi, usando arquivos', async () => {
         const expected = {
             ...DEFAULT_ITEM_CADASTRAR,
