@@ -11,6 +11,6 @@
         "mocha": "^6.0.2"
     },
     "dependencies": {
-        "lodash": "^4.17.11"
+        "commander": "^2.19.0"
     }
 }

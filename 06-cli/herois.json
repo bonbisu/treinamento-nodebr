@@ -1,14 +1,1 @@
-[
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 2, "nome": "Batman", "poder": "Dinheiro" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 2, "nome": "Lanterna Verde", "poder": "Energia do Anel" },
-    { "id": 1, "nome": "Flash", "poder": "Speed" },
-    { "id": 2, "nome": "Batman", "poder": "Dinheiro" }
-]
+[{"id":1553630754767,"nome":"Batman","poder":"Dinheiro"},{"id":1553630766563,"nome":"Flash","poder":"Velocidade"},{"id":1553630795286,"poder":"Marinho","nome":"Aquaman"},{"id":1553631563753,"nome":"Chapolin Colorado","poder":"Marreta Bionica"}]
