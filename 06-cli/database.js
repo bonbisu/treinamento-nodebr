@@ -33,6 +33,34 @@ class Database {
         return resultado;
     }
 
+    async remover(id) {
+        if (!id) {
+            return await this.escreverArquivo([]);
+        }
+        const dados = await this.obterDadosArquivo();
+        const indice = dados.findIndex(item => item.id === parseInt(id));
+        if (indice === -1) {
+            throw Error('O usuário informado não existe');
+        }
+        dados.splice(indice, 1);
+        return await this.escreverArquivo(dados);
+    }
+
+    async atualizar(id, update) {
+        const dados = await this.obterDadosArquivo();
+        const indice = dados.findIndex(item => item.id === parseInt(id));
+        if (indice === -1) {
+            throw Error('O heroi informado não existe');
+        }
+        const atual = dados[indice];
+        const objetoAtualizar = {
+            ...atual,
+            ...update
+        };
+        dados.splice(indice, 1);
+        return await this.escreverArquivo([...dados, objetoAtualizar]);
+    }
+
     async obterDadosArquivo() {
         const arquivo = await readFileAsync(this.NOME_ARQUIVO, 'utf8');
         return JSON.parse(arquivo.toString());
